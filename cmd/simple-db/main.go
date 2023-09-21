@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/godofprodev/simple-db/internal/router"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	r := router.New()
+
+	r.AddHandlers()
 }
