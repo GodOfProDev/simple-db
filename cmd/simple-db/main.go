@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/godofprodev/simple-db/internal/router"
 	"log/slog"
 )
@@ -16,6 +17,6 @@ func main() {
 
 	err = r.Listen(v)
 	if err != nil {
-		slog.Error("there was an issue listening to port 8080: ", err)
+		slog.Error(fmt.Sprintf("there was an issue listening to port : %v", v.GetInt("PORT")), err)
 	}
 }
