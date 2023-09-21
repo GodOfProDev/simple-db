@@ -2,15 +2,20 @@ package main
 
 import (
 	"github.com/godofprodev/simple-db/internal/router"
-	"log"
+	"log/slog"
 )
 
 func main() {
 	r := router.New()
 	r.AddHandlers()
 
-	err := r.Listen()
+	v, err := initViper()
 	if err != nil {
-		log.Fatal("There was an issue listening to port 8080: ", err)
+		slog.Error("failed to initialize viper: ", err)
+	}
+
+	err = r.Listen(v)
+	if err != nil {
+		slog.Error("there was an issue listening to port 8080: ", err)
 	}
 }
