@@ -20,7 +20,9 @@ func New() *Router {
 func (r Router) AddHandlers() {
 	handler := handlers.New()
 
-	r.app.Get("/ping", handler.HandlePing)
+	v1 := r.app.Group("/v1")
+
+	v1.Get("/ping", handler.HandlePing)
 }
 
 func (r Router) Listen(v *viper.Viper) error {
