@@ -1,26 +1,26 @@
 package router
 
 import (
-	handlers "github.com/godofprodev/simple-db/internal/handlers"
+	"github.com/godofprodev/simple-db/internal/handlers"
 	"github.com/gofiber/fiber/v2"
-	"log"
 )
 
-type Router struct{}
+type Router struct {
+	app *fiber.App
+}
 
 func New() *Router {
-	return &Router{}
+	return &Router{
+		app: fiber.New(),
+	}
 }
 
 func (r Router) AddHandlers() {
-	app := fiber.New()
-
 	handler := handlers.New()
 
-	app.Get("/ping", handler.HandlePing)
+	r.app.Get("/ping", handler.HandlePing)
+}
 
-	err := app.Listen(":8080")
-	if err != nil {
-		log.Fatal("There was an issue listening to port 8080: ", err)
-	}
+func (r Router) Listen() error {
+	return r.app.Listen(":8080")
 }
