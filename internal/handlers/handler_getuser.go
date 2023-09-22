@@ -2,18 +2,15 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 func (h Handlers) HandleGetUser(c *fiber.Ctx) error {
-	id := c.Params("id")
-
-	uid, err := uuid.Parse(id)
+	uuid, err := getId(c)
 	if err != nil {
 		return err
 	}
 
-	user, err := h.store.GetUserById(uid)
+	user, err := h.store.GetUserById(uuid)
 	if err != nil {
 		return err
 	}

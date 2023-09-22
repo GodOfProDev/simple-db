@@ -2,18 +2,15 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 func (h Handlers) HandleDeleteUser(c *fiber.Ctx) error {
-	id := c.Params("id")
-
-	uid, err := uuid.Parse(id)
+	uuid, err := getId(c)
 	if err != nil {
 		return err
 	}
 
-	err = h.store.DeleteUser(uid)
+	err = h.store.DeleteUser(uuid)
 	if err != nil {
 		return err
 	}
