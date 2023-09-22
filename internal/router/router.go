@@ -23,15 +23,16 @@ func New(store storage.Storage) *Router {
 	}
 }
 
-func (r Router) AddHandlers() {
-
+func (r Router) RegisterMiddlewares() {
 	r.app.Use(cors.New())
 	r.app.Use(logger.New(logger.Config{
 		Format:     "${cyan}[${time}] ${red}${ip} ${white}${pid} ${red}${status} ${blue}[${method}] ${white}${path}\n",
 		TimeFormat: "02-Jan-2006",
 		TimeZone:   "UTC",
 	}))
+}
 
+func (r Router) RegisterHandlers() {
 	handler := handlers.New(r.store)
 
 	v1 := r.app.Group("/v1")
@@ -49,5 +50,4 @@ func (r Router) AddHandlers() {
 
 func (r Router) Listen(s *config.ServerConfig) error {
 	return r.app.Listen(fmt.Sprintf("%v:%v", s.Host, s.Port))
-
 }

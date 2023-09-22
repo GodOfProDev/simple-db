@@ -23,7 +23,8 @@ func main() {
 	}
 
 	r := router.New(db)
-	r.AddHandlers()
+	r.RegisterMiddlewares()
+	r.RegisterHandlers()
 
 	err = r.Listen(serverCfg)
 	if err != nil {
