@@ -48,6 +48,6 @@ func (r Router) AddHandlers() {
 }
 
 func (r Router) Listen(s *config.ServerConfig) error {
-	return r.app.Listen(fmt.Sprintf(":%v", s.Port))
+	return r.app.Listen(fmt.Sprintf("%v:%v", s.Host, s.Port))
 
 }
