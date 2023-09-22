@@ -4,16 +4,19 @@ import (
 	"fmt"
 	"github.com/godofprodev/simple-db/internal/config"
 	"github.com/godofprodev/simple-db/internal/handlers"
+	"github.com/godofprodev/simple-db/internal/storage"
 	"github.com/gofiber/fiber/v2"
 )
 
 type Router struct {
-	app *fiber.App
+	app   *fiber.App
+	store storage.Storage
 }
 
-func New() *Router {
+func New(store storage.Storage) *Router {
 	return &Router{
-		app: fiber.New(),
+		app:   fiber.New(),
+		store: store,
 	}
 }
 
