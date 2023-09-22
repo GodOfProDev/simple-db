@@ -6,6 +6,7 @@ import (
 	"github.com/godofprodev/simple-db/internal/handlers"
 	"github.com/godofprodev/simple-db/internal/storage"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
 
 type Router struct {
@@ -24,6 +25,8 @@ func (r Router) AddHandlers() {
 	handler := handlers.New(r.store)
 
 	v1 := r.app.Group("/v1")
+
+	v1.Get("/metrics", monitor.New())
 
 	v1.Get("/ping", handler.HandlePing)
 	v1.Get("/users/:id", handler.HandleGetUser)
