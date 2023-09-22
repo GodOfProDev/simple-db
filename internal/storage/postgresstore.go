@@ -30,7 +30,7 @@ func NewPostgresStore(cfg *config.DBConfig) (*PostgresStore, error) {
 const createUserSQL = `INSERT INTO users VALUES ($1, $2, $3, $4)`
 
 func (s *PostgresStore) CreateUser(user *models.User) error {
-	_, err := s.DB.Exec(createUserSQL, user.Id, user.CreatedAt, user.UpdatedAt, user.Name)
+	_, err := s.DB.Exec(createUserSQL, user.Id, user.Name, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
 		return err
 	}
@@ -68,9 +68,9 @@ func (s *PostgresStore) GetUsers() ([]*models.User, error) {
 		user := new(models.User)
 		err := rows.Scan(
 			&user.Id,
+			&user.Name,
 			&user.CreatedAt,
-			&user.UpdatedAt,
-			&user.Name)
+			&user.UpdatedAt)
 
 		if err != nil {
 			return nil, err
