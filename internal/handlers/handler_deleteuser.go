@@ -15,5 +15,5 @@ func (h Handlers) HandleDeleteUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.Status(fiber.StatusOK).SendString("Successfully deleted the account")
+	return c.Status(fiber.StatusOK).SendString("Successfully deleted the account with id of " + uuid.String())
 }

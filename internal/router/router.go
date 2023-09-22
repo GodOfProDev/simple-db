@@ -26,7 +26,7 @@ func (r Router) AddHandlers() {
 
 	v1 := r.app.Group("/v1")
 
-	v1.Get("/metrics", monitor.New())
+	v1.Get("/monitor", monitor.New())
 
 	v1.Get("/ping", handler.HandlePing)
 	v1.Get("/users/:id", handler.HandleGetUser)
