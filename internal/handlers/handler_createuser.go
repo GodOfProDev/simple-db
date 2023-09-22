@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h Handlers) HandleCreateAccount(c *fiber.Ctx) error {
+func (h Handlers) HandleCreateUser(c *fiber.Ctx) error {
 	params := new(models.CreateUserParams)
 
 	if err := c.BodyParser(params); err != nil {

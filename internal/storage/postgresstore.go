@@ -38,15 +38,51 @@ func (s *PostgresStore) CreateUser(user *models.User) error {
 	return nil
 }
 
+const deleteUserSQL = `DELETE FROM users WHERE id = $1`
+
 func (s *PostgresStore) DeleteUser(uuid uuid.UUID) error {
-	//TODO implement me
-	panic("implement me")
+	_, err := s.DB.Exec(deleteUserSQL, uuid)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *PostgresStore) UpdateUser(user *models.User) error {
 	//TODO implement me
 	panic("implement me")
 }
+
+const getUsersSQL = `SELECT * FROM users`
+
+func (s *PostgresStore) GetUsers() ([]*models.User, error) {
+	rows, err := s.DB.Query(getUsersSQL)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []*models.User
+
+	for rows.Next() {
+		user := new(models.User)
+		err := rows.Scan(
+			&user.Id,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.Name)
+
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+const getUserByIdSQL = `SELECT FROM users WHERE id = $1`
 
 func (s *PostgresStore) GetUserById(uuid uuid.UUID) (*models.User, error) {
 	//TODO implement me

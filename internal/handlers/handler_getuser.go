@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h Handlers) HandleGetAccount(c *fiber.Ctx) error {
+func (h Handlers) HandleGetUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	uid, err := uuid.Parse(id)

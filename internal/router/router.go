@@ -26,9 +26,12 @@ func (r Router) AddHandlers() {
 	v1 := r.app.Group("/v1")
 
 	v1.Get("/ping", handler.HandlePing)
-	v1.Get("/user/:id", handler.HandleGetAccount)
-	v1.Delete("/user/:id", handler.HandleDeleteAccount)
-	v1.Post("/user", handler.HandleCreateAccount)
+	v1.Get("/users/:id", handler.HandleGetUser)
+	v1.Get("/users", handler.HandleGetUsers)
+
+	v1.Delete("/users/:id", handler.HandleDeleteUser)
+
+	v1.Post("/users", handler.HandleCreateUser)
 }
 
 func (r Router) Listen(s *config.ServerConfig) error {
