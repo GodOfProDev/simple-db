@@ -21,11 +21,14 @@ func New(store storage.Storage) *Router {
 }
 
 func (r Router) AddHandlers() {
-	handler := handlers.New()
+	handler := handlers.New(r.store)
 
 	v1 := r.app.Group("/v1")
 
 	v1.Get("/ping", handler.HandlePing)
+	v1.Get("/user/:id", handler.HandleGetAccount)
+	v1.Delete("/user/:id", handler.HandleDeleteAccount)
+	v1.Post("/user", handler.HandleCreateAccount)
 }
 
 func (r Router) Listen(s *config.ServerConfig) error {

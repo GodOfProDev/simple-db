@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	v, err := initViper()
 	if err != nil {
 		slog.Error("failed to initialize viper: ", err)
