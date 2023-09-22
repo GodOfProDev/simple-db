@@ -27,9 +27,15 @@ func NewPostgresStore(cfg *config.DBConfig) (*PostgresStore, error) {
 	}, nil
 }
 
+const createUserSQL = `INSERT INTO users VALUES ($1, $2, $3, $4)`
+
 func (s *PostgresStore) CreateUser(user *models.User) error {
-	//TODO implement me
-	panic("implement me")
+	_, err := s.DB.Exec(createUserSQL, user.Id, user.CreatedAt, user.UpdatedAt, user.Name)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *PostgresStore) DeleteUser(uuid uuid.UUID) error {
