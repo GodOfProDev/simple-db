@@ -6,6 +6,8 @@ import (
 	"github.com/godofprodev/simple-db/internal/handlers"
 	"github.com/godofprodev/simple-db/internal/storage"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
 
@@ -22,6 +24,14 @@ func New(store storage.Storage) *Router {
 }
 
 func (r Router) AddHandlers() {
+
+	r.app.Use(cors.New())
+	r.app.Use(logger.New(logger.Config{
+		Format:     "${cyan}[${time}] ${red}${ip} ${white}${pid} ${red}${status} ${blue}[${method}] ${white}${path}\n",
+		TimeFormat: "02-Jan-2006",
+		TimeZone:   "UTC",
+	}))
+
 	handler := handlers.New(r.store)
 
 	v1 := r.app.Group("/v1")
