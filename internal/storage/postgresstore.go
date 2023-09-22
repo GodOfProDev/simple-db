@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/godofprodev/simple-db/internal/config"
 	"github.com/godofprodev/simple-db/internal/models"
 	"github.com/google/uuid"
@@ -65,13 +66,7 @@ func (s *PostgresStore) GetUsers() ([]*models.User, error) {
 	var users []*models.User
 
 	for rows.Next() {
-		user := new(models.User)
-		err := rows.Scan(
-			&user.Id,
-			&user.Name,
-			&user.CreatedAt,
-			&user.UpdatedAt)
-
+		user, err := scanIntoUsers(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -82,9 +77,29 @@ func (s *PostgresStore) GetUsers() ([]*models.User, error) {
 	return users, nil
 }
 
-const getUserByIdSQL = `SELECT FROM users WHERE id = $1`
+const getUserByIdSQL = `SELECT * FROM users WHERE id = $1`
 
 func (s *PostgresStore) GetUserById(uuid uuid.UUID) (*models.User, error) {
-	//TODO implement me
-	panic("implement me")
+	rows, err := s.DB.Query(getUserByIdSQL, uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		return scanIntoUsers(rows)
+	}
+
+	return nil, errors.New("account not found")
+}
+
+func scanIntoUsers(rows *sql.Rows) (*models.User, error) {
+	user := new(models.User)
+
+	err := rows.Scan(
+		&user.Id,
+		&user.Name,
+		&user.CreatedAt,
+		&user.UpdatedAt)
+
+	return user, err
 }

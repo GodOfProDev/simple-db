@@ -18,5 +18,5 @@ func (h Handlers) HandleGetUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.SendString("get account for user with name of " + user.Name)
+	return c.Status(fiber.StatusOK).JSON(user)
 }
