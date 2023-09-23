@@ -14,7 +14,7 @@ WORKDIR /app/cmd/simple-db
 
 ENV PORT=8080
 ENV HOST=0.0.0.0
-ENV DB_URL=postgres://godofpro:secretpass@localhost:5432/simpledb?sslmode=disable
+ENV DB_URL="postgres://godofpro:secretpass@postgres-simpledb:5432/simpledb?sslmode=disable"
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /simple-db
 
