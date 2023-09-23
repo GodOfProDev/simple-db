@@ -1,0 +1,22 @@
+services:
+  api:
+    env_file:
+      - .env
+    build: ./
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./.env:/.env
+  db:
+    image: postgres:16.0-alpine3.18
+    container_name: postgres-simpledb
+    environment:
+      POSTGRES_PASSWORD: secretpass
+      POSTGRES_USER: godofpro
+      POSTGRES_DB: simpledb
+    ports:
+      - "5432:5432"
+    volumes:
+      - simpledb:/var/lib/postgresql/data
+volumes:
+  simpledb:
