@@ -18,6 +18,7 @@ const (
 	deleteUserSQL  = `DELETE FROM users WHERE id = $1`
 	getUsersSQL    = `SELECT * FROM users`
 	getUserByIdSQL = `SELECT * FROM users WHERE id = $1`
+	updateUserSQL  = `UPDATE users SET name = $1, updated_at = $2 WHERE id = $3`
 )
 
 func NewPostgresStore(cfg *config.DBConfig) (*PostgresStore, error) {
@@ -54,8 +55,12 @@ func (s *PostgresStore) DeleteUser(uuid uuid.UUID) error {
 }
 
 func (s *PostgresStore) UpdateUser(user *models.User) error {
-	//TODO implement me
-	panic("implement me")
+	_, err := s.DB.Exec(updateUserSQL, user.Name, user.UpdatedAt, user.Id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *PostgresStore) GetUsers() ([]*models.User, error) {

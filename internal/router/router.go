@@ -46,6 +46,8 @@ func (r Router) RegisterHandlers() {
 	v1.Delete("/users/:id", handler.HandleDeleteUser)
 
 	v1.Post("/users", handler.HandleCreateUser)
+
+	v1.Put("/users/:id", handler.HandleUpdateUser)
 }
 
 func (r Router) Listen(s *config.ServerConfig) error {
