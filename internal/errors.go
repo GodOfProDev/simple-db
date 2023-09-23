@@ -36,14 +36,14 @@ func ErrDeletingUser() APIError {
 
 func ErrGettingUser() APIError {
 	return APIError{
-		Status: fiber.StatusInternalServerError,
+		Status: fiber.StatusNotFound,
 		Msg:    "there was an issue getting the user",
 	}
 }
 
 func ErrGettingUsers() APIError {
 	return APIError{
-		Status: fiber.StatusInternalServerError,
+		Status: fiber.StatusNotFound,
 		Msg:    "there was an issue getting the users",
 	}
 }
