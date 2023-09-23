@@ -9,17 +9,17 @@ func (h Handlers) HandleCreateUser(c *fiber.Ctx) error {
 	params := new(models.CreateUserParams)
 
 	if err := c.BodyParser(params); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrParsingParams))
 	}
 
 	if params.Name == "" {
-		return c.Status(fiber.StatusBadRequest).SendString("Name is required.")
+		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrNameRequired))
 	}
 
 	user := models.NewUser(params)
 
 	if err := h.store.CreateUser(user); err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).Send(ErrToJson(ErrCreatingUser))
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(user)

@@ -9,22 +9,22 @@ import (
 func (h Handlers) HandleUpdateUser(c *fiber.Ctx) error {
 	uuid, err := getId(c)
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrInvalidUUID))
 	}
 
 	params := new(models.UpdateUserParams)
 
 	if err := c.BodyParser(params); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrParsingParams))
 	}
 
 	if params.Name == "" {
-		return c.Status(fiber.StatusBadRequest).SendString("Name is required.")
+		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrNameRequired))
 	}
 
 	user, err := h.store.GetUserById(uuid)
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).Send(ErrToJson(ErrGettingUser))
 	}
 
 	user.Name = params.Name
@@ -32,7 +32,7 @@ func (h Handlers) HandleUpdateUser(c *fiber.Ctx) error {
 
 	err = h.store.UpdateUser(user)
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).Send(ErrToJson(ErrUpdatingUser))
 	}
 
 	return c.Status(fiber.StatusOK).JSON(user)
