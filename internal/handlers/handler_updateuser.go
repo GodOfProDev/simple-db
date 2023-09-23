@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/godofprodev/simple-db/internal"
 	"github.com/godofprodev/simple-db/internal/models"
 	"github.com/gofiber/fiber/v2"
 	"time"
@@ -9,22 +10,22 @@ import (
 func (h Handlers) HandleUpdateUser(c *fiber.Ctx) error {
 	uuid, err := getId(c)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrInvalidUUID))
+		return internal.ErrInvalidUUID()
 	}
 
 	params := new(models.UpdateUserParams)
 
 	if err := c.BodyParser(params); err != nil {
-		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrParsingParams))
+		return internal.ErrParsingParams()
 	}
 
 	if params.Name == "" {
-		return c.Status(fiber.StatusBadRequest).Send(ErrToJson(ErrNameRequired))
+		return internal.ErrNameRequired()
 	}
 
 	user, err := h.store.GetUserById(uuid)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).Send(ErrToJson(ErrGettingUser))
+		return internal.ErrGettingUser()
 	}
 
 	user.Name = params.Name
@@ -32,8 +33,8 @@ func (h Handlers) HandleUpdateUser(c *fiber.Ctx) error {
 
 	err = h.store.UpdateUser(user)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).Send(ErrToJson(ErrUpdatingUser))
+		return internal.ErrUpdatingUser()
 	}
 
-	return c.Status(fiber.StatusOK).JSON(user)
+	return internal.SuccessUpdateUser(user)
 }

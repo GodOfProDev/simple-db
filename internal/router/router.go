@@ -1,7 +1,9 @@
 package router
 
 import (
+	"errors"
 	"fmt"
+	"github.com/godofprodev/simple-db/internal"
 	"github.com/godofprodev/simple-db/internal/config"
 	"github.com/godofprodev/simple-db/internal/handlers"
 	"github.com/godofprodev/simple-db/internal/storage"
@@ -17,8 +19,28 @@ type Router struct {
 }
 
 func New(store storage.Storage) *Router {
+
+	app := fiber.New(fiber.Config{ErrorHandler: func(c *fiber.Ctx, err error) error {
+		var apiErr internal.APIError
+		if errors.As(err, &apiErr) {
+			return c.Status(apiErr.Status).JSON(apiErr)
+		}
+
+		var apiSuccessData internal.APISuccessData
+		if errors.As(err, &apiSuccessData) {
+			return c.Status(apiSuccessData.Status).JSON(apiSuccessData.Data)
+		}
+
+		var apiSuccessString internal.APISuccessString
+		if errors.As(err, &apiSuccessString) {
+			return c.Status(apiSuccessString.Status).JSON(apiSuccessString)
+		}
+
+		return c.Status(fiber.StatusInternalServerError).JSON(map[string]any{"message": "internal server error"})
+	}})
+
 	return &Router{
-		app:   fiber.New(),
+		app:   app,
 		store: store,
 	}
 }
