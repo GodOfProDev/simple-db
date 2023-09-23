@@ -1,7 +1,6 @@
 package router
 
 import (
-	"errors"
 	"fmt"
 	"github.com/godofprodev/simple-db/internal"
 	"github.com/godofprodev/simple-db/internal/config"
@@ -20,24 +19,9 @@ type Router struct {
 
 func New(store storage.Storage) *Router {
 
-	app := fiber.New(fiber.Config{ErrorHandler: func(c *fiber.Ctx, err error) error {
-		var apiErr internal.APIError
-		if errors.As(err, &apiErr) {
-			return c.Status(apiErr.Status).JSON(apiErr)
-		}
-
-		var apiSuccessData internal.APISuccessData
-		if errors.As(err, &apiSuccessData) {
-			return c.Status(apiSuccessData.Status).JSON(apiSuccessData.Data)
-		}
-
-		var apiSuccessString internal.APISuccessString
-		if errors.As(err, &apiSuccessString) {
-			return c.Status(apiSuccessString.Status).JSON(apiSuccessString)
-		}
-
-		return c.Status(fiber.StatusInternalServerError).JSON(map[string]any{"message": "internal server error"})
-	}})
+	app := fiber.New(fiber.Config{
+		ErrorHandler: customErrorHandler,
+	})
 
 	return &Router{
 		app:   app,
@@ -74,4 +58,17 @@ func (r Router) RegisterHandlers() {
 
 func (r Router) Listen(s *config.ServerConfig) error {
 	return r.app.Listen(fmt.Sprintf("%v:%v", s.Host, s.Port))
+}
+
+func customErrorHandler(c *fiber.Ctx, err error) error {
+	switch e := err.(type) {
+	case internal.APIError:
+		return c.Status(e.Status).JSON(e)
+	case internal.APISuccessData:
+		return c.Status(e.Status).JSON(e.Data)
+	case internal.APISuccessString:
+		return c.Status(e.Status).JSON(e)
+	default:
+		return c.Status(fiber.StatusInternalServerError).JSON(map[string]interface{}{"message": "internal server error"})
+	}
 }
