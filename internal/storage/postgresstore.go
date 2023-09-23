@@ -13,6 +13,13 @@ type PostgresStore struct {
 	DB *sql.DB
 }
 
+const (
+	createUserSQL  = `INSERT INTO users VALUES ($1, $2, $3, $4)`
+	deleteUserSQL  = `DELETE FROM users WHERE id = $1`
+	getUsersSQL    = `SELECT * FROM users`
+	getUserByIdSQL = `SELECT * FROM users WHERE id = $1`
+)
+
 func NewPostgresStore(cfg *config.DBConfig) (*PostgresStore, error) {
 	db, err := sql.Open("postgres", cfg.Url)
 	if err != nil {
@@ -28,8 +35,6 @@ func NewPostgresStore(cfg *config.DBConfig) (*PostgresStore, error) {
 	}, nil
 }
 
-const createUserSQL = `INSERT INTO users VALUES ($1, $2, $3, $4)`
-
 func (s *PostgresStore) CreateUser(user *models.User) error {
 	_, err := s.DB.Exec(createUserSQL, user.Id, user.Name, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
@@ -38,8 +43,6 @@ func (s *PostgresStore) CreateUser(user *models.User) error {
 
 	return nil
 }
-
-const deleteUserSQL = `DELETE FROM users WHERE id = $1`
 
 func (s *PostgresStore) DeleteUser(uuid uuid.UUID) error {
 	_, err := s.DB.Exec(deleteUserSQL, uuid)
@@ -54,8 +57,6 @@ func (s *PostgresStore) UpdateUser(user *models.User) error {
 	//TODO implement me
 	panic("implement me")
 }
-
-const getUsersSQL = `SELECT * FROM users`
 
 func (s *PostgresStore) GetUsers() ([]*models.User, error) {
 	rows, err := s.DB.Query(getUsersSQL)
@@ -76,8 +77,6 @@ func (s *PostgresStore) GetUsers() ([]*models.User, error) {
 
 	return users, nil
 }
-
-const getUserByIdSQL = `SELECT * FROM users WHERE id = $1`
 
 func (s *PostgresStore) GetUserById(uuid uuid.UUID) (*models.User, error) {
 	rows, err := s.DB.Query(getUserByIdSQL, uuid)
