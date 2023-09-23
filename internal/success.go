@@ -12,7 +12,7 @@ type APISuccessData struct {
 	Data   interface{} `json:"-"`
 }
 
-type APISuccessString struct {
+type APISuccessResponse struct {
 	Status int    `json:"-"`
 	Msg    string `json:"message"`
 }
@@ -22,12 +22,12 @@ func (e APISuccessData) Error() string {
 	return string(jsonBytes)
 }
 
-func (e APISuccessString) Error() string {
+func (e APISuccessResponse) Error() string {
 	return e.Msg
 }
 
-func SuccessDeleteUser(uuid uuid.UUID) APISuccessString {
-	return APISuccessString{
+func SuccessDeleteUser(uuid uuid.UUID) APISuccessResponse {
+	return APISuccessResponse{
 		Status: fiber.StatusOK,
 		Msg:    "successfully deleted account id " + uuid.String(),
 	}

@@ -66,7 +66,7 @@ func customErrorHandler(c *fiber.Ctx, err error) error {
 		return c.Status(e.Status).JSON(e)
 	case internal.APISuccessData:
 		return c.Status(e.Status).JSON(e.Data)
-	case internal.APISuccessString:
+	case internal.APISuccessResponse:
 		return c.Status(e.Status).JSON(e)
 	default:
 		return c.Status(fiber.StatusInternalServerError).JSON(map[string]interface{}{"message": "internal server error"})
